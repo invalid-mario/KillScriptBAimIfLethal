@@ -39,7 +39,7 @@
       "Name": "Focus",
       "Type": "Button",
       "Binding": {
-        "Path": "<Mouse>/forwardButton"
+        "Path": "<Keyboard>/Insert"
       }
     }
   ]

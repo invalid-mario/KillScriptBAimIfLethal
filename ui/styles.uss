@@ -75,16 +75,8 @@
     box-sizing: border-box;
     box-shadow: 0 0 6px rgba(23,205,251,0.15); */
     color: var(--accent-color-primary);
+}
 
-
-    /* aimfov semicircles on borders without gradient opacity */
-    /* border-radius: 1000%;
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-left-color: yellow;
-    border-right-color: yellow;
-    border-top-color: #FFFFFF00;
-    border-bottom-color: #FFFFFF00; */
+.icons__aimbot-head-or-lethal {
+    background-image: url("project://database/Assets/Reflex/Icons/aimbot-head-or-lethal.png?fileID=2800000&guid=PLACEHOLDER&type=3#aimbot-head-or-lethal");
 }
