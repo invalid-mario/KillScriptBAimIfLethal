@@ -220,45 +220,68 @@ local function FindTargetHitboxAndAimPositionFirearm(target, mode, firearm, pene
  if len == 0 then return nil, nil end
  local targetOwnerId = target.ID
 
- local function CheckHitbox(hb)
+ local headHitbox = list[1]
+ local bodyHitbox = list[2]
+
+ local function CheckMultiPoint(hb)
   if not hb then return false, nil end
-  if CpuLimit.RemainingCpuTime >= 0.45 then
-   local ok, mp = TryMultiPointHitFirearm(hb, firearm, penetrationThresholdPercent, firePos, targetOwnerId)
-   if ok then return true, mp end
-  else
-   if TrySinglePointHitFirearm(hb, firearm, penetrationThresholdPercent, firePos, targetOwnerId) then
-    return true, hb.Position
-   end
-  end
+  local ok, mp = TryMultiPointHitFirearm(hb, firearm, penetrationThresholdPercent, firePos, targetOwnerId)
+  if ok then return true, mp end
   return false, nil
  end
 
- -- НОВАЯ ЛОГИКА: Сначала проверяем тело
- local bodyHitbox = list[2]
- local bodyOk, bodyPos = CheckHitbox(bodyHitbox)
- 
- if bodyOk then
-  if mode == EReflexAimMode.HeadOrLethal then
-   -- Если тело видно, проверяем его летальность
-   if IsHitLethal(bodyHitbox, firearm, firePos, bodyPos) then
-    -- Если выстрел летален, немедленно возвращаем тело как цель, игнорируя голову
-    return bodyHitbox, bodyPos
+ local function CheckSinglePoint(hb)
+  if not hb then return false end
+  if TrySinglePointHitFirearm(hb, firearm, penetrationThresholdPercent, firePos, targetOwnerId) then
+   return true
+  end
+  return false
+ end
+
+ -- ПРИОРИТЕТ 1: Тело (если режим HeadOrLethal или Body)
+ if mode == EReflexAimMode.HeadOrLethal or mode == EReflexAimMode.Body then
+  if bodyHitbox then
+   local bodyOk, bodyPos = false, nil
+   if CpuLimit.RemainingCpuTime >= 0.45 then
+    bodyOk, bodyPos = CheckMultiPoint(bodyHitbox)
+   else
+    if CheckSinglePoint(bodyHitbox) then
+     bodyOk = true
+     bodyPos = bodyHitbox.Position
+    end
    end
-  elseif mode == EReflexAimMode.Body then
-   return bodyHitbox, bodyPos
+
+   if bodyOk then
+    if mode == EReflexAimMode.Body then
+     return bodyHitbox, bodyPos
+    elseif mode == EReflexAimMode.HeadOrLethal then
+     if IsHitLethal(bodyHitbox, firearm, firePos, bodyPos) then
+      return bodyHitbox, bodyPos
+     end
+    end
+   end
   end
  end
 
- -- Если тело не летально (или не видно), проверяем голову для всех режимов кроме Body
+ -- ПРИОРИТЕТ 2: Голова (для режимов Head, OnlyHead, HeadOrLethal)
  if mode ~= EReflexAimMode.Body then
-  local headHitbox = list[1]
-  local headOk, headPos = CheckHitbox(headHitbox)
-  if headOk then
-   return headHitbox, headPos
+  if headHitbox then
+   local headOk, headPos = false, nil
+   if CpuLimit.RemainingCpuTime >= 0.45 then
+    headOk, headPos = CheckMultiPoint(headHitbox)
+   else
+    if CheckSinglePoint(headHitbox) then
+     headOk = true
+     headPos = headHitbox.Position
+    end
+   end
+
+   if headOk then
+    return headHitbox, headPos
+   end
   end
  end
 
- -- Fallback в зависимости от режима
  if mode == EReflexAimMode.OnlyHead or mode == EReflexAimMode.HeadOrLethal then
   return nil, nil
  end
@@ -268,14 +291,16 @@ local function FindTargetHitboxAndAimPositionFirearm(target, mode, firearm, pene
   length = len - 4
  end
 
+ -- Fallback: проверяем остальные хитбоксы (ноги, руки) ТОЛЬКО через SinglePoint
  for i = 3, length do
   local hb = list[i]
   if hb then
-   local ok, pos = CheckHitbox(hb)
-   if ok then return hb, pos end
+   if CheckSinglePoint(hb) then
+    return hb, hb.Position
+   end
   end
  end
- 
+
  return nil, nil
 end
 
