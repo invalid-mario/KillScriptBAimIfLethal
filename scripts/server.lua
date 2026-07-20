@@ -233,54 +233,28 @@ local function FindTargetHitboxAndAimPositionFirearm(target, mode, firearm, pene
   return false, nil
  end
 
- -- Приоритет 1: Голова (для всех режимов кроме Body)
+ -- НОВАЯ ЛОГИКА: Сначала проверяем тело
+ local bodyHitbox = list[2]
+ local bodyOk, bodyPos = CheckHitbox(bodyHitbox)
+ 
+ if bodyOk then
+  if mode == EReflexAimMode.HeadOrLethal then
+   -- Если тело видно, проверяем его летальность
+   if IsHitLethal(bodyHitbox, firearm, firePos, bodyPos) then
+    -- Если выстрел летален, немедленно возвращаем тело как цель, игнорируя голову
+    return bodyHitbox, bodyPos
+   end
+  elseif mode == EReflexAimMode.Body then
+   return bodyHitbox, bodyPos
+  end
+ end
+
+ -- Если тело не летально (или не видно), проверяем голову для всех режимов кроме Body
  if mode ~= EReflexAimMode.Body then
   local headHitbox = list[1]
   local headOk, headPos = CheckHitbox(headHitbox)
   if headOk then
    return headHitbox, headPos
-  end
- end
-
- -- Приоритет 2: Тело (для Body или если голова не видна в других режимах)
- local bodyHitbox = list[2]
- local bodyOk, bodyPos = CheckHitbox(bodyHitbox)
- 
- if bodyOk then
-  -- Для режима HeadOrLethal: если тело летально - целимся в него
-  if mode == EReflexAimMode.HeadOrLethal then
-   local isLethal = false
-   if target and target.Health and firearm and firearm.Config then
-    local currentHealth = target.Health.CurrentHealthPrecise
-    if currentHealth == nil then currentHealth = target.Health.CurrentHealth end
-    
-    if currentHealth ~= nil then
-     local config = firearm.Config
-     local distance = (bodyHitbox.Position - firePos).magnitude
-     
-     local baseDamage = config.Damage
-     local distantDamage = config.DamageDistant
-     local falloffBegin = config.DamageFalloffBegin
-     local falloffEnd = config.DamageFalloffEnd
-     
-     local damage = baseDamage
-     if falloffEnd and falloffBegin and falloffEnd > falloffBegin then
-      if distance >= falloffEnd then
-       damage = distantDamage
-      elseif distance > falloffBegin then
-       local t = (distance - falloffBegin) / (falloffEnd - falloffBegin)
-       damage = baseDamage + (distantDamage - baseDamage) * t
-      end
-     end
-     isLethal = (damage >= currentHealth)
-    end
-   end
-   
-   if isLethal then
-    return bodyHitbox, bodyPos
-   end
-  elseif mode == EReflexAimMode.Body then
-   return bodyHitbox, bodyPos
   end
  end
 
