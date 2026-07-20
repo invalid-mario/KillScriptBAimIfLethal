@@ -1,0 +1,36 @@
+[
+  {
+    "label": "Aim Fov",
+    "key": "AimFov",
+    "type": "number",
+    "value": 90.0,
+    "min": 1.0,
+    "max": 360.0
+  },
+  {
+    "label": "Aim Mode Mask",
+    "key": "AimModeMask",
+    "type": "maskenum",
+    "value": 4,
+    "options": [
+      "None",
+      "Only Head",
+      "Head",
+      "Body"
+    ]
+  },
+  {
+    "label": "Last see target timer",
+    "key": "LastSeeTargetTimer",
+    "type": "number",
+    "value": 0.5,
+    "min": 0.0,
+    "max": 5.0
+  },
+  {
+    "label": "Auto save config",
+    "key": "AutoSaveConfig",
+    "type": "bool",
+    "value": true
+  }
+]

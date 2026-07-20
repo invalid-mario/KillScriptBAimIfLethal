@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="./styles.uss" />
+    <ui:VisualElement name="Root" class="reflex">
+        <ui:VisualElement name="AimbotItem" class="reflex-item">
+            <ui:VisualElement name="AimbotIcon" class="reflex-icon icons__aimbot-none" />
+            <TheCyber.Runtime.UI.Components.DotViewElement name="AimbotDotView" count="4" value="0" class="dot-view" />
+            <TheCyber.Runtime.UI.Components.HotKeyViewElement name="SwitchAimModeHotkey" action-path="Default Reflex+/SwitchAimMode" class="reflex-hotkey" />
+        </ui:VisualElement>
+        <ui:VisualElement name="ThresholdItem" class="reflex-item">
+            <ui:VisualElement name="ThresholdIcon" class="reflex-icon icons__threshold-none" />
+            <TheCyber.Runtime.UI.Components.DotViewElement name="ThresholdDotView" count="10" value="0" class="dot-view" />
+            <ui:VisualElement name="PenetrationHotkeys" class="reflex-hotkey-row">
+                <TheCyber.Runtime.UI.Components.HotKeyViewElement name="PenetrationDownHotkey" action-path="Default Reflex+/PenetrationDown" class="reflex-hotkey reflex-hotkey--spaced" />
+                <TheCyber.Runtime.UI.Components.HotKeyViewElement name="PenetrationUpHotkey" action-path="Default Reflex+/PenetrationUp" class="reflex-hotkey" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

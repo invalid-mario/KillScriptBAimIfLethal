@@ -1,0 +1,46 @@
+{
+  "Actions": [
+    {
+      "Name": "SwitchAimMode",
+      "Type": "Button",
+      "Binding": {
+        "Path": "<Keyboard>/q"
+      }
+    },
+    {
+      "Name": "SaveNewConfig",
+      "Type": "Button",
+      "Binding": {
+        "Path": "<Keyboard>/k"
+      }
+    },
+    {
+      "Name": "PenetrationHold",
+      "Type": "Button",
+      "Binding": {
+        "Path": "<Keyboard>/leftAlt"
+      }
+    },
+    {
+      "Name": "PenetrationUp",
+      "Type": "Button",
+      "Binding": {
+        "Path": "<Mouse>/scroll/up"
+      }
+    },
+    {
+      "Name": "PenetrationDown",
+      "Type": "Button",
+      "Binding": {
+        "Path": "<Mouse>/scroll/down"
+      }
+    },
+    {
+      "Name": "Focus",
+      "Type": "Button",
+      "Binding": {
+        "Path": "<Mouse>/forwardButton"
+      }
+    }
+  ]
+}
